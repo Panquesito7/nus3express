@@ -1,0 +1,19 @@
+name: Compile the program
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install -r requirements.txt && pip install pyinstaller
+      - name: Compile the program
+        run: pyinstaller --onefile --noconsole main.py
+      - name: Run the program and convert the sample file to WAV
+        run: |
+          ./dist/main.exe -i ./sample/STAD_Home_Win_Mario_32k.idsp -o ./sample.wav
